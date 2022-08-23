@@ -3,8 +3,7 @@
 /node_modules
 
 #Env Files
-.local.env
-.prod.env
+
 
 # Logs
 logs
