@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class Employee {
   @PrimaryGeneratedColumn()
   ID: number;
-  @Column()
+  @Column({ unique: true })
   empID: number;
   @Column()
   name: string;
@@ -23,13 +23,26 @@ export class Employee {
   @Column({ default: 0 })
   pendingLeave: number;
   @Column('simple-json', {
-    default: { leave: { status: 'NA', leaveDate: 'NA', comment: 'NA' } },
+    default: {
+      leave: { status: 'NA', leaveDate: 'NA', leaveDays: 0, comment: 'NA' },
+    },
   })
   leaveDetails: {
     leave: {
       status: string;
       leaveDate: Date;
+      leaveDays: number;
       comment: string;
     };
   };
+  // leaveDetails: [
+  //   {
+  //     leave: {
+  //       status: string;
+  //       leaveDate: Date;
+  //       leaveDays: number;
+  //       comment: string;
+  //     };
+  //   },
+  // ];
 }

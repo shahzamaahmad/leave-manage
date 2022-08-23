@@ -4,5 +4,6 @@
 export class UpdateEmployeeDto {
   status: string;
   leaveDate: Date;
+  leaveDays: number;
   comment: string;
 }

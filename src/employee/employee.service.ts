@@ -1,15 +1,16 @@
+import { AuthService } from './../auth/auth.service';
 import { Employee } from './entities/employee.entity';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Repository } from 'typeorm';
-
+import { ApplyLeaveEmployeeDto } from './dto/applyleave-employee.dto';
 @Injectable()
 export class EmployeeService {
   constructor(
-    @InjectRepository(Employee) private readonly repo: Repository<Employee>,
-  ) {}
+    @InjectRepository(Employee) private readonly repo: Repository<Employee>, // private readonly authService: AuthService,
+  ) { }
 
   create(createEmployeeDto: CreateEmployeeDto) {
     try {
@@ -19,9 +20,18 @@ export class EmployeeService {
       emp.empID = createEmployeeDto.empID;
       emp.password = createEmployeeDto.password;
       emp.role = createEmployeeDto.role;
+
+      // const userObj = async () => {
+      //   const user = await this.repo.findOneBy({ ID: createEmployeeDto.empID });
+      //   return user;
+      // };
+      // userObj().then((id: Employee) => {
+      //   if (id.empID === createEmployeeDto.empID) return 'ID Alredy exist';
+      // });
+
       return this.repo.save(emp);
     } catch (e) {
-      return e;
+      return 'Employee Id Already Exist';
     }
   }
 
@@ -30,9 +40,9 @@ export class EmployeeService {
     // return this.repo.findOne(empID);
   }
 
-  approveLeave(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+  responseLeave(id: number, updateEmployeeDto: UpdateEmployeeDto) {
     // try {
-    const emp = new Employee();
+    // const emp = new Employee();
 
     const userObj = async () => {
       const user = await this.repo.findOneBy({ ID: id });
@@ -47,13 +57,23 @@ export class EmployeeService {
         //   ...user.leaveDetails,
         // };
 
-        if (updateEmployeeDto.status === 'approve') {
+        if (
+          updateEmployeeDto.status === 'approve' &&
+          user.availableLeave !== 0
+        ) {
+          // user.pendingLeave >= 0
+          //   ? user.pendingLeave - 1
+          //   : (user.pendingLeave = 0);
+          user.pendingLeave = user.pendingLeave - updateEmployeeDto.leaveDays;
           user.takenLeave = user.takenLeave + 1;
-          user.availableLeave = user.availableLeave - 1;
+          user.availableLeave =
+            user.availableLeave - updateEmployeeDto.leaveDays;
           user.leaveDetails.leave = {
             status: updateEmployeeDto.status,
             leaveDate: new Date(),
+            leaveDays: +updateEmployeeDto.leaveDays,
             comment: updateEmployeeDto.comment,
+
             ...user.leaveDetails,
           };
         }
@@ -62,15 +82,17 @@ export class EmployeeService {
           user.leaveDetails.leave = {
             status: updateEmployeeDto.status,
             leaveDate: new Date(),
+            leaveDays: updateEmployeeDto.leaveDays,
             comment: updateEmployeeDto.comment,
             ...user.leaveDetails,
           };
         }
         if (updateEmployeeDto.status === 'pending') {
-          user.pendingLeave = 1;
+          user.pendingLeave = user.pendingLeave + 1;
           user.leaveDetails.leave = {
             status: updateEmployeeDto.status,
             leaveDate: new Date(),
+            leaveDays: updateEmployeeDto.leaveDays,
             comment: updateEmployeeDto.comment,
             ...user.leaveDetails,
           };
@@ -83,11 +105,40 @@ export class EmployeeService {
       });
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+  applyLeave(id: number, applyLeaveEmployeeDto: ApplyLeaveEmployeeDto) {
+    const userObj = async () => {
+      const user = await this.repo.findOneBy({ ID: id });
+      console.log(user);
+      return user;
+    };
+    return userObj()
+      .then((user: Employee) => {
+        if (applyLeaveEmployeeDto.leaveDays <= 12) {
+          user.pendingLeave = applyLeaveEmployeeDto.leaveDays;
+        }
+        return this.repo.save(user);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  findOne(username: string) {
+    const userObj = async () => {
+      const user = await this.repo.findOneBy({ username: username });
+      // await user.username;
+      return user;
+    };
+    // console.log(userObj());
+    return userObj();
+  }
+  async login({ username }: { username: string }) {
+    const user = await this.repo.findOneBy({ username: username });
+    // if (!user) {
+    //   throw new UnauthorizedException('Invalid Credentials');
+    // }
+    const { password, ...result } = user;
+
+    return result;
   }
 }
