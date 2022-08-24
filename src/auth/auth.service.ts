@@ -21,12 +21,15 @@ export class AuthService {
     }
     return null;
   }
-  async login(user: any) {
+  async generateToken(user: any) {
     console.log(user);
 
     const payload = { username: user.username, empID: user.empID };
     return {
       access_token: this.jwtService.sign(payload),
+      // const secret = 'secretkey'
+      // const signOptions: { scret: 'secretkey' expiresIn: '60s' },
+      // this.jwtService.sign(payload, signOptions);
     };
   }
 }

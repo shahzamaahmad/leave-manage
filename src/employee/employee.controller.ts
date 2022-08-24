@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { LocalAuthGuard } from './local.authguard';
 import {
   Controller,

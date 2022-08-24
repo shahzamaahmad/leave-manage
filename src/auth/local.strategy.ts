@@ -33,13 +33,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     }
     return user
   }
-  async login(user: any) {
-    console.log(user);
+  // async login(user: any) {
+  //   console.log(user);
 
-    const payload = { username: user.username, sub: user.empID };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+  //   const payload = { username: user.username, sub: user.empID };
+  //   return {
+  //     access_token: this.jwtService.sign(payload),
+  //   };
+  // }
 
 }
