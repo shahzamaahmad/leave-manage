@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { JwtStrategy } from './jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
