@@ -1,5 +1,4 @@
 import { LocalAuthGuard } from './local.authguard';
-import { AuthService } from './../auth/auth.service';
 import {
   Controller,
   Get,
@@ -9,15 +8,11 @@ import {
   Param,
   UseGuards,
   Request,
-  forwardRef,
-  Inject,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { ApplyLeaveEmployeeDto } from './dto/applyleave-employee.dto';
-// import { AuthGuard } from '@nestjs/passport';
-
 @Controller('employee')
 export class EmployeeController {
   constructor(

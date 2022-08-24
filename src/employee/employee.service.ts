@@ -1,6 +1,6 @@
-import { AuthService } from './../auth/auth.service';
+/* eslint-disable prettier/prettier */
 import { Employee } from './entities/employee.entity';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
@@ -20,15 +20,6 @@ export class EmployeeService {
       emp.empID = createEmployeeDto.empID;
       emp.password = createEmployeeDto.password;
       emp.role = createEmployeeDto.role;
-
-      // const userObj = async () => {
-      //   const user = await this.repo.findOneBy({ ID: createEmployeeDto.empID });
-      //   return user;
-      // };
-      // userObj().then((id: Employee) => {
-      //   if (id.empID === createEmployeeDto.empID) return 'ID Alredy exist';
-      // });
-
       return this.repo.save(emp);
     } catch (e) {
       return 'Employee Id Already Exist';
@@ -41,22 +32,12 @@ export class EmployeeService {
   }
 
   responseLeave(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    // try {
-    // const emp = new Employee();
-
     const userObj = async () => {
       const user = await this.repo.findOneBy({ ID: id });
       return user;
     };
     return userObj()
       .then((user: Employee) => {
-        // user.leaveDetails.leave = {
-        //   status: updateEmployeeDto.status,
-        //   leaveDate: new Date(),
-        //   comment: updateEmployeeDto.comment,
-        //   ...user.leaveDetails,
-        // };
-
         if (
           updateEmployeeDto.status === 'approve' &&
           user.availableLeave !== 0
@@ -122,21 +103,15 @@ export class EmployeeService {
         console.log(e);
       });
   }
-
   findOne(username: string) {
     const userObj = async () => {
       const user = await this.repo.findOneBy({ username: username });
-      // await user.username;
       return user;
     };
-    // console.log(userObj());
     return userObj();
   }
   async login({ username }: { username: string }) {
     const user = await this.repo.findOneBy({ username: username });
-    // if (!user) {
-    //   throw new UnauthorizedException('Invalid Credentials');
-    // }
     const { password, ...result } = user;
 
     return result;
