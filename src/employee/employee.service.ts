@@ -6,10 +6,18 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Repository } from 'typeorm';
 import { ApplyLeaveEmployeeDto } from './dto/applyleave-employee.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { forwardRef } from '@nestjs/common/utils';
+import { Inject } from '@nestjs/common/decorators';
 @Injectable()
 export class EmployeeService {
   constructor(
-    @InjectRepository(Employee) private readonly repo: Repository<Employee>, // private readonly authService: AuthService,
+    @InjectRepository(Employee) private readonly repo: Repository<Employee>,
+    // private readonly authService: AuthService,
+
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
+
   ) { }
 
   create(createEmployeeDto: CreateEmployeeDto) {
@@ -109,11 +117,5 @@ export class EmployeeService {
       return user;
     };
     return userObj();
-  }
-  async login({ username }: { username: string }) {
-    const user = await this.repo.findOneBy({ username: username });
-    const { password, ...result } = user;
-
-    return result;
   }
 }

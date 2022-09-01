@@ -12,7 +12,6 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.employeeService.findOne(username);
-    // console.log(user);
 
     if (user && user.password === pass) {
       const { password, ...result } = user;
@@ -25,11 +24,9 @@ export class AuthService {
     console.log(user);
 
     const payload = { username: user.username, empID: user.empID };
+    const JwtSignOptions = { secret: 'secretkey', expiresIn: '60s' }
     return {
-      access_token: this.jwtService.sign(payload),
-      // const secret = 'secretkey'
-      // const signOptions: { scret: 'secretkey' expiresIn: '60s' },
-      // this.jwtService.sign(payload, signOptions);
+      access_token: this.jwtService.sign(payload, JwtSignOptions)
     };
   }
 }

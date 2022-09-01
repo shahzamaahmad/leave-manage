@@ -1,10 +1,8 @@
-import { AppController } from './app.controller';
-import { JwtService } from '@nestjs/jwt';
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmployeeModule } from './employee/employee.module';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -33,8 +31,7 @@ import { AuthModule } from './auth/auth.module';
     EmployeeModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AuthService, JwtService],
+  controllers: [],
   exports: [],
 })
-export class AppModule {}
+export class AppModule { }
