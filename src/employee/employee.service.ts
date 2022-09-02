@@ -15,8 +15,8 @@ export class EmployeeService {
     @InjectRepository(Employee) private readonly repo: Repository<Employee>,
     // private readonly authService: AuthService,
 
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
+    // @Inject(forwardRef(() => AuthService))
+    // private readonly authService: AuthService,
 
   ) { }
 

@@ -21,7 +21,7 @@ export class AuthService {
     return null;
   }
   async generateToken(user: any) {
-    console.log(user);
+    // console.log(user);
 
     const payload = { username: user.username, empID: user.empID };
     const JwtSignOptions = { secret: 'secretkey', expiresIn: '60s' }

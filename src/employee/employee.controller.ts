@@ -1,3 +1,4 @@
+import { AuthGuard } from '@nestjs/passport';
 /* eslint-disable prettier/prettier */
 import {
   Controller,
@@ -18,6 +19,7 @@ import { ApplyLeaveEmployeeDto } from './dto/applyleave-employee.dto';
 import { JwtAuthGuard } from './jwt.authguard';
 import { Inject } from '@nestjs/common/decorators';
 import { AuthService } from 'src/auth/auth.service';
+import { log } from 'console';
 @Controller('employee')
 export class EmployeeController {
   constructor(
@@ -31,15 +33,14 @@ export class EmployeeController {
     return this.employeeService.create(createEmployeeDto);
   }
 
+  @UseGuards(AuthGuard('local'))
   @Post('login')
-  @UseGuards(LocalAuthGuard)
-  // @UseGuards(JwtAuthGuard)
-  login(@Request() req: any) {
-
-    return this.authService.generateToken(req.user);
-    // return req.user;
+  async login(@Request() req: any) {
+    req.user.access_token = await (await this.authService.generateToken(req.user)).access_token
+    return req.user;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getLeave/:empID')
   getLeave(@Param('empID') empID: number) {
     return this.employeeService.getLeaveById(empID);
